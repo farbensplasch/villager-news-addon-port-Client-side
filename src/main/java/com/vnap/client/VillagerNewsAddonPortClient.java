@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegist
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityTypes;
@@ -89,7 +88,7 @@ public final class VillagerNewsAddonPortClient implements ClientModInitializer {
 		}
 		while (cycleSignKey.consumeClick()) {
 			if (target == null) continue;
-			boolean shift = Screen.hasShiftDown();
+			boolean shift = client.hasShiftDown();
 			if (shift) VillagerCosmetics.cycleSignType(target.getUUID(), false);
 			else VillagerCosmetics.cycleSignMessage(target.getUUID(), false);
 		}
