@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.state.VillagerRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
+import org.joml.Matrix4f;
 import traben.entity_model_features.models.IEMFModel;
 import traben.entity_model_features.models.animation.EMFAttachment;
 
@@ -47,7 +48,7 @@ public final class VillagerNewsSignLayer extends RenderLayer<VillagerRenderState
 			positioner.accept(poseStack);
 		}
 		poseStack.translate(0.0F, 5.75F / 16.0F, -1.75F / 16.0F);
-		poseStack.mulPose(Axis.XP.rotationDegrees(42.97F));
+		poseStack.mulPose(new Matrix4f().rotation(Axis.XP.rotationDegrees(42.97F)));
 		collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(BOARD_TEXTURES[type]),
 			(pose, vertices) -> drawBoard(pose, vertices, packedLight));
 		collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(TEXT_TEXTURE),

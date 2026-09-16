@@ -10,13 +10,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegist
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.lwjgl.glfw.GLFW;
 import traben.entity_model_features.EMFAnimationApi;
 
 import java.io.IOException;
@@ -65,11 +65,11 @@ public final class VillagerNewsAddonPortClient implements ClientModInitializer {
 		});
 
 		toggleNoseKey = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.villager-news-addon-port.toggle_nose", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, CATEGORY));
+			new KeyMapping("key.villager-news-addon-port.toggle_nose", InputConstants.Type.KEYBOARD, InputConstants.KEY_N, CATEGORY));
 		cycleSignKey = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.villager-news-addon-port.cycle_sign", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, CATEGORY));
+			new KeyMapping("key.villager-news-addon-port.cycle_sign", InputConstants.Type.KEYBOARD, InputConstants.KEY_B, CATEGORY));
 		openHandbookKey = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.villager-news-addon-port.open_handbook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY));
+			new KeyMapping("key.villager-news-addon-port.open_handbook", InputConstants.Type.KEYBOARD, InputConstants.KEY_H, CATEGORY));
 
 		DialogueSubtitleState.register();
 		ClientDialogueController.register();
@@ -89,8 +89,7 @@ public final class VillagerNewsAddonPortClient implements ClientModInitializer {
 		}
 		while (cycleSignKey.consumeClick()) {
 			if (target == null) continue;
-			boolean shift = GLFW.glfwGetKey(client.getWindow().handle(), GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS
-				|| GLFW.glfwGetKey(client.getWindow().handle(), GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS;
+			boolean shift = Screen.hasShiftDown();
 			if (shift) VillagerCosmetics.cycleSignType(target.getUUID(), false);
 			else VillagerCosmetics.cycleSignMessage(target.getUUID(), false);
 		}
