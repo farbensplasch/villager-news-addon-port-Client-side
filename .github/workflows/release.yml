@@ -11,11 +11,21 @@ permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: current
+            ref: ""
+          - name: legacy-26.2
+            ref: mc/26.2
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.ref || github.sha }}
 
       - name: Set up JDK 25
         uses: actions/setup-java@v4
@@ -29,9 +39,33 @@ jobs:
       - name: Build
         run: ./gradlew build --no-daemon
 
-      - name: Locate build artifact
+      - name: Rename build artifact with its Minecraft version
         id: artifact
-        run: echo "path=$(find build/libs -maxdepth 1 -name '*.jar' ! -name '*-sources.jar')" >> "$GITHUB_OUTPUT"
+        run: |
+          jar=$(find build/libs -maxdepth 1 -name '*.jar' ! -name '*-sources.jar')
+          mcver=$(grep -m1 '^minecraft_version=' gradle.properties | cut -d= -f2)
+          renamed="build/libs/$(basename "$jar" .jar)-${mcver}.jar"
+          mv "$jar" "$renamed"
+          echo "path=$renamed" >> "$GITHUB_OUTPUT"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: jar-${{ matrix.name }}
+          path: ${{ steps.artifact.outputs.path }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download built jars
+        uses: actions/download-artifact@v7
+        with:
+          path: dist
+          merge-multiple: true
 
       - name: Read mod version
         id: version
@@ -41,5 +75,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || steps.version.outputs.tag }}
-          files: ${{ steps.artifact.outputs.path }}
+          files: dist/*.jar
           generate_release_notes: true
