@@ -12,7 +12,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -52,7 +52,7 @@ public final class VillagerNewsAddonPortClient implements ClientModInitializer {
 		}
 
 		LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, helper, context) -> {
-			if (entityType == EntityTypes.VILLAGER && entityRenderer instanceof VillagerRenderer villagerRenderer) {
+			if (entityType == EntityType.VILLAGER && entityRenderer instanceof VillagerRenderer villagerRenderer) {
 				helper.register(new VillagerNewsSignLayer(villagerRenderer));
 			}
 		});
