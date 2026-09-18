@@ -12,10 +12,6 @@ import net.minecraft.client.renderer.entity.state.VillagerRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import traben.entity_model_features.models.IEMFModel;
-import traben.entity_model_features.models.animation.EMFAttachment;
-
-import java.util.function.Consumer;
 
 public final class VillagerNewsSignLayer extends RenderLayer<VillagerRenderState, VillagerModel> {
 	private static final Identifier[] BOARD_TEXTURES = {
@@ -38,14 +34,7 @@ public final class VillagerNewsSignLayer extends RenderLayer<VillagerRenderState
 		int message = sign.vnap$signMessage();
 		if (state.isInvisible || state.isBaby || type < 0 || type >= BOARD_TEXTURES.length || message < 0 || message >= 87) return;
 		poseStack.pushPose();
-		Consumer<PoseStack> positioner = getParentModel() instanceof IEMFModel emfModel
-			? emfModel.emf$getEMFRootModel().getPositionerForAttachment(EMFAttachment.Type.VILLAGER)
-			: null;
-		if (positioner == null) {
-			getParentModel().translateToArms(state, poseStack);
-		} else {
-			positioner.accept(poseStack);
-		}
+		getParentModel().translateToArms(state, poseStack);
 		poseStack.translate(0.0F, 5.75F / 16.0F, -1.75F / 16.0F);
 		poseStack.mulPose(Axis.XP.rotationDegrees(42.97F));
 		collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(BOARD_TEXTURES[type]),
